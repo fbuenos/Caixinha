@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minha Caixinha de Perguntas</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f4f4f4; }
+        .card { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 320px; text-align: center; }
+        h2 { color: #333; font-size: 1.2rem; margin-bottom: 15px; }
+        textarea { width: 100%; height: 100px; border: 1px solid #ddd; border-radius: 10px; padding: 10px; resize: none; box-sizing: border-box; font-size: 1rem; }
+        button { margin-top: 15px; width: 100%; padding: 12px; border: none; border-radius: 25px; background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); color: white; font-weight: bold; cursor: pointer; transition: transform 0.2s; }
+        button:active { transform: scale(0.95); }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>Mande sua pergunta!</h2>
+    <textarea id="pergunta" placeholder="Escreva algo aqui..."></textarea>
+    <button onclick="enviar()">Enviar Pergunta</button>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+  // --- COLE SEUS DADOS DO FIREBASE AQUI ---
+  const firebaseConfig = {
+  apiKey: "AIzaSyBBlFPd-O1oZT3y_GhhgYDnma6WCb55Q-0",
+  authDomain: "caixinha-do-telegrave.firebaseapp.com",
+  projectId: "caixinha-do-telegrave",
+  storageBucket: "caixinha-do-telegrave.firebasestorage.app",
+  messagingSenderId: "125012090050",
+  appId: "1:125012090050:web:ffbf77c6a517adb83fef5b",
+  measurementId: "G-J7D103QPBJ"
+};
+  // ---------------------------------------
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  window.enviar = async function() {
+    const texto = document.getElementById('pergunta').value;
+    if (texto.trim() === "") return alert("Digite algo antes de enviar!");
+
+    try {
+      await addDoc(collection(db, "perguntas"), {
+        conteudo: texto,
+        data: serverTimestamp()
+      });
+      alert("Enviado com sucesso!");
+      document.getElementById('pergunta').value = "";
+    } catch (e) {
+      alert("Erro ao enviar: " + e.message);
+    }
+  }
+</script>
+
+</body>
+</html>
